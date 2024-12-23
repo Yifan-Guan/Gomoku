@@ -15,7 +15,7 @@ public class GlobalData {
     static int BoardHeight = (BoardRows - 1) * BoardCellWidth + 2 * BoardBoundaryWidth;
 
     // SP is the abbreviation of Statistical Panel.
-    static int SPWidth = 600;
+    static int SPWidth = 550;
     static int SPHeight = BoardHeight;
     static int SPBoundaryWidth = 20;
 
