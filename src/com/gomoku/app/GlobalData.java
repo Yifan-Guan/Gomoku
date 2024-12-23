@@ -1,6 +1,8 @@
 package com.gomoku.app;
 
 public class GlobalData {
+    static int Criterion = 5;
+
     static int BoardRows = 15;
     static int BoardColumns = 15;
     static int BoardCellWidth = 50;
@@ -10,7 +12,7 @@ public class GlobalData {
     static int BoardHeight = (BoardRows - 1) * BoardCellWidth + 2 * BoardBoundaryWidth;
 
     // SP is the abbreviation of Statistical Panel.
-    static int SPWidth = 400;
+    static int SPWidth = 600;
     static int SPHeight = BoardHeight;
     static int SPBoundaryWidth = 20;
 
@@ -20,11 +22,76 @@ public class GlobalData {
 
     enum PlayerType {NONE, WHITE, BLACK};
     static PlayerType CurrentType = PlayerType.WHITE;
+    static PlayerType Winer = PlayerType.NONE;
     static PlayerType[][] Pieces = new PlayerType[BoardRows][BoardColumns];
 
     static void initPieces() {
         for (int i = 0; i < BoardRows; i++)
             for (int j = 0; j < BoardColumns; j++)
                 Pieces[i][j] = PlayerType.NONE;
+    }
+    static boolean judge(int r, int c) {
+        if (r < 0 || r >= BoardRows || c < 0 || c >= BoardColumns)
+            return false;
+        boolean result = false;
+        int[] Count = new int[4];
+        boolean[] BreakOut = new boolean[8];
+        for (int i = 1; i < Criterion; i++) {
+            if (r - i > 0 && !BreakOut[0]) {
+                if (Pieces[r - i][c] == Pieces[r][c])
+                    Count[0]++;
+                else
+                    BreakOut[0] = true;
+            }
+            if (r + i < BoardRows && !BreakOut[1]) {
+                if (Pieces[r + 1][c] == Pieces[r][c])
+                    Count[0]++;
+                else
+                    BreakOut[1] = true;
+            }
+            if (r - i > 0 && c + i < BoardColumns && !BreakOut[2]) {
+                if (Pieces[r - i][c + i] == Pieces[r][c])
+                    Count[1]++;
+                else
+                    BreakOut[2] = true;
+            }
+            if (r + i < BoardRows && c - i > 0 && !BreakOut[3]) {
+                if (Pieces[r + i][c - i] == Pieces[r][c])
+                    Count[1]++;
+                else
+                    BreakOut[3] = true;
+            }
+            if (c - i > 0 && !BreakOut[4]) {
+                if (Pieces[r][c - i] == Pieces[r][c])
+                    Count[2]++;
+                else
+                    BreakOut[4] = true;
+            }
+            if (c + i < BoardColumns && !BreakOut[5]) {
+                if (Pieces[r][c + i] == Pieces[r][c])
+                    Count[2]++;
+                else
+                    BreakOut[5] = true;
+            }
+            if (r - i > 0 && c - i > 0 && !BreakOut[6]) {
+                if (Pieces[r - i][c - i] == Pieces[r][c])
+                    Count[3]++;
+                else
+                    BreakOut[6] = true;
+            }
+            if (r + i < BoardRows && c + i < BoardColumns && !BreakOut[7]) {
+                if (Pieces[r + i][c + i] == Pieces[r][c])
+                    Count[3]++;
+                else
+                    BreakOut[7] = true;
+            }
+        }
+        for (int i : Count) {
+            if (i >= Criterion - 1) {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 }

@@ -8,8 +8,10 @@ public class UI extends JFrame{
         Container c = getContentPane();
         setSize(GlobalData.UIWidth, GlobalData.UIHeight);
         c.setLayout(new FlowLayout());
-        c.add(new Board());
-        c.add(new StatisticalPanel());
+        Board ChessBoard = new Board();
+        StatisticalPanel ChessSP = new StatisticalPanel();
+        c.add(ChessBoard);
+        c.add(ChessSP);
 
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

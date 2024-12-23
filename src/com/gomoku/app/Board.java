@@ -70,9 +70,12 @@ public class Board extends JComponent {
                 SourceColumn = TestColumn;
             if (GlobalData.Pieces[SourceRow][SourceColumn] == GlobalData.PlayerType.NONE) {
                 GlobalData.Pieces[SourceRow][SourceColumn] = GlobalData.CurrentType;
+                repaint();
+                if (GlobalData.judge(SourceRow, SourceColumn)) {
+                    GlobalData.Winer = GlobalData.CurrentType;
+                }
                 GlobalData.CurrentType = GlobalData.CurrentType == GlobalData.PlayerType.WHITE ?
                         GlobalData.PlayerType.BLACK : GlobalData.PlayerType.WHITE;
-                repaint();
             }
         }
     }
