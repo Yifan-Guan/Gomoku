@@ -3,6 +3,9 @@ package com.gomoku.app;
 public class GlobalData {
     static int Criterion = 5;
 
+    static int StartUIWidth = 600;
+    static int StartUIHeight = 700;
+
     static int BoardRows = 15;
     static int BoardColumns = 15;
     static int BoardCellWidth = 50;

@@ -19,8 +19,8 @@ public class StatisticalPanel extends JComponent{
     public void drawFrame(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.drawRect(GlobalData.SPBoundaryWidth, GlobalData.SPBoundaryWidth,
-                GlobalData.SPWidth - 2 * GlobalData.SPBoundaryWidth,
-                GlobalData.SPHeight - 2 * GlobalData.SPBoundaryWidth);
+                getWidth() - 2 * GlobalData.SPBoundaryWidth,
+                getHeight() - 2 * GlobalData.SPBoundaryWidth);
     }
     public void showText(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;

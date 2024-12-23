@@ -5,7 +5,8 @@ import java.awt.*;
 public class Main {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
-            UI MainUi = new UI();
+            StartUI MainUi = new StartUI();
+            MainUi.setVisible(true);
         });
     }
 }
