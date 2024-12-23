@@ -3,8 +3,11 @@ package com.gomoku.app;
 import java.awt.*;
 import javax.swing.*;
 
-public class UI extends JFrame{
-    public UI() {
+public class PVPUI extends JFrame{
+    private StartUI ParentFrame;
+
+    public PVPUI(StartUI p) {
+        ParentFrame = p;
         Container c = getContentPane();
         c.setLayout(new FlowLayout());
         Board ChessBoard = new Board();
