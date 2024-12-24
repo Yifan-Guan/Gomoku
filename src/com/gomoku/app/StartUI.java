@@ -6,12 +6,16 @@ import java.awt.geom.*;
 import javax.swing.*;
 
 public class StartUI extends JFrame {
+    private StartPanel SP;
     public StartUI() {
         Container c = getContentPane();
-        StartPanel SP = new StartPanel(this);
+        SP = new StartPanel(this);
         c.add(SP);
         pack();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+    public void startNet() {
+        SP.startNet();
     }
 }
 
@@ -24,8 +28,15 @@ class StartPanel extends JComponent {
     private Rectangle2D.Double PVPRect;
     private Rectangle2D.Double NetRect;
 
+    private NetConnection Net;
+    private PVPUI ThePVPUI;
+    private ConnectUI TheConnectUI;
+
     public StartPanel(StartUI p) {
         ParentFrame = p;
+        ThePVPUI = new PVPUI(ParentFrame);
+        TheConnectUI = new ConnectUI(ParentFrame);
+        Net = new NetConnection();
         addMouseListener(new ChoseOption());
     }
 
@@ -74,6 +85,17 @@ class StartPanel extends JComponent {
         g2.draw(NetRect);
     }
 
+    public void startNet() {
+        if (TheConnectUI.getConnectType() == 0) {
+            System.out.println("server");
+            Net.beginServer(TheConnectUI.getPort());
+        }
+        else if (TheConnectUI.getConnectType() == 1) {
+            System.out.println("partner");
+            Net.connect(TheConnectUI.getHost(), TheConnectUI.getPort());
+        }
+    }
+
     public Dimension getPreferredSize() {
         return new Dimension(GlobalData.StartUIWidth, GlobalData.StartUIHeight);
     }
@@ -84,13 +106,11 @@ class StartPanel extends JComponent {
             int EY = event.getY();
             if (EX >= PVPRect.getX() && EX <= PVPRect.getX() + PVPRect.getWidth()
             && EY >= PVPRect.getY() && EY <= PVPRect.getY() + PVPRect.getHeight()) {
-                PVPUI ThePVPUI = new PVPUI(ParentFrame);
                 ParentFrame.setVisible(false);
                 ThePVPUI.setVisible(true);
             }
             if (EX >= NetRect.getX() && EX <= NetRect.getX() + NetRect.getWidth()
                     && EY >= NetRect.getY() && EY <= NetRect.getY() + NetRect.getHeight()) {
-                ConnectUI TheConnectUI = new ConnectUI(ParentFrame);
                 ParentFrame.setVisible(false);
                 TheConnectUI.setVisible(true);
             }
