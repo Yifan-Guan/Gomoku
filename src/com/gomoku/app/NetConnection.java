@@ -31,7 +31,6 @@ public class NetConnection {
                     String PlayerText = GlobalData.Player == GlobalData.PlayerType.WHITE ?
                             "BLACK" : "WHITE";
                     OutStream.println(GlobalData.ChatMessageHead + GlobalData.PlayerMessageHead + PlayerText);
-                    System.out.println("done");
                     ReceiveInput();
                 } catch (IOException e) {
                 }
@@ -44,7 +43,6 @@ public class NetConnection {
                 String NewLine;
                 try {
                     while ((NewLine = InputReader.readLine()) != null) {
-                        System.out.println(NewLine);
                         AnalysisLine(NewLine);
                     }
                 }
@@ -59,9 +57,6 @@ public class NetConnection {
             String[] Number = Line.split(GlobalData.ChessMessageSeparator);
             GlobalData.PlayerType AnotherPlayer = GlobalData.Player == GlobalData.PlayerType.WHITE ?
                     GlobalData.PlayerType.BLACK : GlobalData.PlayerType.WHITE;
-            System.out.println(Number[0]);
-            System.out.println(Number[1]);
-            System.out.println(AnotherPlayer == GlobalData.PlayerType.WHITE ? "WHITE" : "BLACK");
             if(GlobalData.dropPiece(Integer.parseInt(Number[0]), Integer.parseInt(Number[1]), AnotherPlayer)) {
                 if (GlobalData.judge(Integer.parseInt(Number[0]), Integer.parseInt(Number[1]))) {
                     GlobalData.Winner = GlobalData.NexDrop;
@@ -71,7 +66,6 @@ public class NetConnection {
             }
         }
         else if (Line.startsWith(GlobalData.ChatMessageHead)) {
-            System.out.println(Line);
             Line = Line.substring(GlobalData.ChatMessageHead.length());
             if (Line.startsWith(GlobalData.PlayerMessageHead)) {
                 Line = Line.substring(GlobalData.PlayerMessageHead.length());
