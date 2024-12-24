@@ -6,8 +6,15 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Board extends JComponent {
-    public Board() {
+    private PVPUI ParentFrame;
+    private StartUI GrandFrame;
+
+    public Board(PVPUI p, StartUI g) {
+        ParentFrame = p;
+        GrandFrame = g;
+
         setSize(GlobalData.BoardWidth, GlobalData.BoardHeight);
+        new Timer(500, e -> repaint()).start();
         GlobalData.initPieces();
         addMouseListener(new MouseDropPiece());
     }
@@ -68,13 +75,17 @@ public class Board extends JComponent {
                 SourceRow = TestRow;
             if (SourceColumn != TestColumn)
                 SourceColumn = TestColumn;
-            if (GlobalData.Pieces[SourceRow][SourceColumn] == GlobalData.PlayerType.NONE) {
-                GlobalData.Pieces[SourceRow][SourceColumn] = GlobalData.CurrentType;
-                repaint();
-                if (GlobalData.judge(SourceRow, SourceColumn)) {
-                    GlobalData.Winer = GlobalData.CurrentType;
+            if (!GlobalData.NetMode)
+                GlobalData.Player = GlobalData.NexDrop;
+            if (GlobalData.dropPiece(SourceRow, SourceColumn, GlobalData.Player)) {
+                if (GlobalData.NetMode) {
+                    GrandFrame.getNet().sendMessage(GlobalData.ChessMessageHead + String.valueOf(SourceRow)
+                            + GlobalData.ChessMessageSeparator + String.valueOf(SourceColumn));
                 }
-                GlobalData.CurrentType = GlobalData.CurrentType == GlobalData.PlayerType.WHITE ?
+                if (GlobalData.judge(SourceRow, SourceColumn)) {
+                    GlobalData.Winner = GlobalData.NexDrop;
+                }
+                GlobalData.NexDrop = GlobalData.NexDrop == GlobalData.PlayerType.WHITE ?
                         GlobalData.PlayerType.BLACK : GlobalData.PlayerType.WHITE;
             }
         }

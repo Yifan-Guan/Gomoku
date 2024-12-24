@@ -6,12 +6,19 @@ import java.awt.geom.*;
 import javax.swing.*;
 
 public class StartUI extends JFrame {
+    private StartPanel SP;
     public StartUI() {
         Container c = getContentPane();
-        StartPanel SP = new StartPanel(this);
+        SP = new StartPanel(this);
         c.add(SP);
         pack();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+    public void startNet() {
+        SP.startNet();
+    }
+    NetConnection getNet() {
+        return SP.getNet();
     }
 }
 
@@ -22,9 +29,19 @@ class StartPanel extends JComponent {
     private int OptionSize = 50;
     private int OptionStyle = Font.PLAIN;
     private Rectangle2D.Double PVPRect;
+    private Rectangle2D.Double NetRect;
+
+    private NetConnection Net;
+    private PVPUI ThePVPUI;
+    private ConnectUI TheConnectUI;
+    private PVPUI TheNetUI;
 
     public StartPanel(StartUI p) {
         ParentFrame = p;
+        ThePVPUI = new PVPUI(ParentFrame);
+        TheConnectUI = new ConnectUI(ParentFrame);
+        TheNetUI = new PVPUI(ParentFrame);
+        Net = new NetConnection();
         addMouseListener(new ChoseOption());
     }
 
@@ -45,14 +62,14 @@ class StartPanel extends JComponent {
         g2.drawString(TitleText, TitleX, TitleY);
     }
     public void drawButton(Graphics g) {
-        String PVPText = "P V P";
         Graphics2D g2 = (Graphics2D) g;
         Font TheFont = getFont();
         TheFont = TheFont.deriveFont(OptionStyle, OptionSize);
         g2.setFont(TheFont);
+
+        String PVPText = "P V P";
         double PVPHeight = TheFont.getStringBounds(PVPText, g2.getFontRenderContext()).getHeight();
         double PVPWidth = TheFont.getStringBounds(PVPText, g2.getFontRenderContext()).getWidth();
-        double PVPLeading = TheFont.getLineMetrics(PVPText, g2.getFontRenderContext()).getLeading();
         int PVPX = (int)((getWidth() - PVPWidth) / 2);
         int PVPY = (int)(getHeight() - PVPHeight * 2);
         g2.drawString(PVPText, PVPX, PVPY);
@@ -60,6 +77,31 @@ class StartPanel extends JComponent {
                 PVPWidth * 2, PVPHeight);
         g2.setStroke(new BasicStroke(5));
         g2.draw(PVPRect);
+
+        String NetText = "N E T";
+        double NetHeight = TheFont.getStringBounds(NetText, g2.getFontRenderContext()).getHeight();
+        double NetWidth = TheFont.getStringBounds(NetText, g2.getFontRenderContext()).getWidth();
+        int NetX = (int)((getWidth() - NetWidth) / 2);
+        int NetY = (int)(PVPY - NetHeight * 2);
+        g2.drawString(NetText, NetX, NetY);
+        NetRect = new Rectangle2D.Double(NetX - NetWidth / 2, NetY - NetHeight * 3 / 4,
+                NetWidth * 2, NetHeight);
+        g2.setStroke(new BasicStroke(5));
+        g2.draw(NetRect);
+    }
+
+    public void startNet() {
+        if (TheConnectUI.getConnectType() == 0) {
+            System.out.println("server");
+            GlobalData.Player = TheConnectUI.getPlayer();
+            Net.beginServer(TheConnectUI.getPort());
+        }
+        else if (TheConnectUI.getConnectType() == 1) {
+            System.out.println("partner");
+            Net.connect(TheConnectUI.getHost(), TheConnectUI.getPort());
+        }
+        ParentFrame.setVisible(false);
+        TheNetUI.setVisible(true);
     }
 
     public Dimension getPreferredSize() {
@@ -72,10 +114,18 @@ class StartPanel extends JComponent {
             int EY = event.getY();
             if (EX >= PVPRect.getX() && EX <= PVPRect.getX() + PVPRect.getWidth()
             && EY >= PVPRect.getY() && EY <= PVPRect.getY() + PVPRect.getHeight()) {
-                PVPUI ThePVPUI = new PVPUI(ParentFrame);
                 ParentFrame.setVisible(false);
                 ThePVPUI.setVisible(true);
+                GlobalData.NetMode = false;
+            }
+            if (EX >= NetRect.getX() && EX <= NetRect.getX() + NetRect.getWidth()
+                    && EY >= NetRect.getY() && EY <= NetRect.getY() + NetRect.getHeight()) {
+                ParentFrame.setVisible(false);
+                TheConnectUI.setVisible(true);
+                GlobalData.NetMode = true;
             }
         }
     }
+
+    NetConnection getNet() {return Net;}
 }
