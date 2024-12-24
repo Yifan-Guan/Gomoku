@@ -17,6 +17,9 @@ public class StartUI extends JFrame {
     public void startNet() {
         SP.startNet();
     }
+    NetConnection getNet() {
+        return SP.getNet();
+    }
 }
 
 class StartPanel extends JComponent {
@@ -31,11 +34,13 @@ class StartPanel extends JComponent {
     private NetConnection Net;
     private PVPUI ThePVPUI;
     private ConnectUI TheConnectUI;
+    private PVPUI TheNetUI;
 
     public StartPanel(StartUI p) {
         ParentFrame = p;
         ThePVPUI = new PVPUI(ParentFrame);
         TheConnectUI = new ConnectUI(ParentFrame);
+        TheNetUI = new PVPUI(ParentFrame);
         Net = new NetConnection();
         addMouseListener(new ChoseOption());
     }
@@ -88,12 +93,15 @@ class StartPanel extends JComponent {
     public void startNet() {
         if (TheConnectUI.getConnectType() == 0) {
             System.out.println("server");
+            GlobalData.Player = TheConnectUI.getPlayer();
             Net.beginServer(TheConnectUI.getPort());
         }
         else if (TheConnectUI.getConnectType() == 1) {
             System.out.println("partner");
             Net.connect(TheConnectUI.getHost(), TheConnectUI.getPort());
         }
+        ParentFrame.setVisible(false);
+        TheNetUI.setVisible(true);
     }
 
     public Dimension getPreferredSize() {
@@ -108,12 +116,16 @@ class StartPanel extends JComponent {
             && EY >= PVPRect.getY() && EY <= PVPRect.getY() + PVPRect.getHeight()) {
                 ParentFrame.setVisible(false);
                 ThePVPUI.setVisible(true);
+                GlobalData.NetMode = false;
             }
             if (EX >= NetRect.getX() && EX <= NetRect.getX() + NetRect.getWidth()
                     && EY >= NetRect.getY() && EY <= NetRect.getY() + NetRect.getHeight()) {
                 ParentFrame.setVisible(false);
                 TheConnectUI.setVisible(true);
+                GlobalData.NetMode = true;
             }
         }
     }
+
+    NetConnection getNet() {return Net;}
 }

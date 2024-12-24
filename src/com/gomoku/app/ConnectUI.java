@@ -1,7 +1,5 @@
 package com.gomoku.app;
 
-import com.sun.source.tree.WhileLoopTree;
-
 import java.awt.*;
 import javax.swing.*;
 
@@ -13,8 +11,8 @@ public class ConnectUI extends JFrame{
 
     private String Host = "localhost";
     private int Port = 8189;
-    private int ConnectType;
-    private GlobalData.PlayerType Player;
+    private int ConnectType = 0;
+    private GlobalData.PlayerType Player = GlobalData.PlayerType.WHITE;
 
     public ConnectUI(StartUI p) {
         ParentFrame = p;
@@ -79,7 +77,6 @@ public class ConnectUI extends JFrame{
 
         ConnectButton.addActionListener(e -> {
             setVisible(false);
-            ParentFrame.setVisible(true);
             ParentFrame.startNet();
         });
         CancelButton.addActionListener(e -> {

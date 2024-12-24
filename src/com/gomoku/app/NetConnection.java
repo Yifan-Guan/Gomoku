@@ -28,7 +28,9 @@ public class NetConnection {
                     Socket InCome = Server.accept();
                     InputReader = new BufferedReader(new InputStreamReader(InCome.getInputStream()));
                     OutStream = new PrintStream(InCome.getOutputStream(), true);
-                    OutStream.println("hello");
+                    String PlayerText = GlobalData.Player == GlobalData.PlayerType.WHITE ?
+                            "BLACK" : "WHITE";
+                    OutStream.println(GlobalData.ChatMessageHead + GlobalData.PlayerMessageHead + PlayerText);
                     System.out.println("done");
                     ReceiveInput();
                 } catch (IOException e) {
@@ -51,14 +53,35 @@ public class NetConnection {
             }
         }.start();
     }
-    public void AnalysisLine(String Line) {
+    public synchronized void AnalysisLine(String Line) {
         if (Line.startsWith(GlobalData.ChessMessageHead)) {
-            Line.substring(GlobalData.ChessMessageHead.length());
+            Line = Line.substring(GlobalData.ChessMessageHead.length());
             String[] Number = Line.split(GlobalData.ChessMessageSeparator);
-            GlobalData.dropPiece(Integer.parseInt(Number[0]), Integer.parseInt(Number[1]), GlobalData.Player);
+            GlobalData.PlayerType AnotherPlayer = GlobalData.Player == GlobalData.PlayerType.WHITE ?
+                    GlobalData.PlayerType.BLACK : GlobalData.PlayerType.WHITE;
+            System.out.println(Number[0]);
+            System.out.println(Number[1]);
+            System.out.println(AnotherPlayer == GlobalData.PlayerType.WHITE ? "WHITE" : "BLACK");
+            if(GlobalData.dropPiece(Integer.parseInt(Number[0]), Integer.parseInt(Number[1]), AnotherPlayer)) {
+                if (GlobalData.judge(Integer.parseInt(Number[0]), Integer.parseInt(Number[1]))) {
+                    GlobalData.Winner = GlobalData.NexDrop;
+                }
+                GlobalData.NexDrop = GlobalData.NexDrop == GlobalData.PlayerType.WHITE ?
+                        GlobalData.PlayerType.BLACK : GlobalData.PlayerType.WHITE;
+            }
         }
         else if (Line.startsWith(GlobalData.ChatMessageHead)) {
             System.out.println(Line);
+            Line = Line.substring(GlobalData.ChatMessageHead.length());
+            if (Line.startsWith(GlobalData.PlayerMessageHead)) {
+                Line = Line.substring(GlobalData.PlayerMessageHead.length());
+                if (Line.equals("WHITE")) {
+                    GlobalData.Player = GlobalData.PlayerType.WHITE;
+                }
+                else {
+                    GlobalData.Player = GlobalData.PlayerType.BLACK;
+                }
+            }
         }
     }
     public void sendMessage(String m) {

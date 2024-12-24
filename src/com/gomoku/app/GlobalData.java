@@ -32,9 +32,11 @@ public class GlobalData {
     static int ConnectUIWidth = 600;
     static int ConnectUIHeight = 300;
 
+    static boolean NetMode = false;
     static String ChessMessageHead = "Chess: ";
     static String ChessMessageSeparator = ",";
     static String ChatMessageHead = "Chat: ";
+    static String PlayerMessageHead = "Player: ";
 
     static void initPieces() {
         NexDrop = PlayerType.WHITE;
@@ -44,12 +46,20 @@ public class GlobalData {
                 Pieces[i][j] = PlayerType.NONE;
     }
     static boolean dropPiece(int r, int c, PlayerType t) {
-        if (Pieces[r][c] == PlayerType.NONE && t == NexDrop) {
-            Pieces[r][c] = t;
-            return true;
+        if (NetMode) {
+            if (Pieces[r][c] == PlayerType.NONE && t == NexDrop) {
+                Pieces[r][c] = t;
+                return true;
+            } else
+                return false;
         }
-        else
-            return false;
+        else {
+            if (Pieces[r][c] == PlayerType.NONE && t == NexDrop) {
+                Pieces[r][c] = t;
+                return true;
+            } else
+                return false;
+        }
     }
     static boolean judge(int r, int c) {
         if (r < 0 || r >= BoardRows || c < 0 || c >= BoardColumns)

@@ -6,8 +6,15 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Board extends JComponent {
-    public Board() {
+    private PVPUI ParentFrame;
+    private StartUI GrandFrame;
+
+    public Board(PVPUI p, StartUI g) {
+        ParentFrame = p;
+        GrandFrame = g;
+
         setSize(GlobalData.BoardWidth, GlobalData.BoardHeight);
+        new Timer(500, e -> repaint()).start();
         GlobalData.initPieces();
         addMouseListener(new MouseDropPiece());
     }
@@ -68,8 +75,13 @@ public class Board extends JComponent {
                 SourceRow = TestRow;
             if (SourceColumn != TestColumn)
                 SourceColumn = TestColumn;
-            if (GlobalData.dropPiece(SourceRow, SourceColumn, GlobalData.NexDrop)) {
-                repaint();
+            if (!GlobalData.NetMode)
+                GlobalData.Player = GlobalData.NexDrop;
+            if (GlobalData.dropPiece(SourceRow, SourceColumn, GlobalData.Player)) {
+                if (GlobalData.NetMode) {
+                    GrandFrame.getNet().sendMessage(GlobalData.ChessMessageHead + String.valueOf(SourceRow)
+                            + GlobalData.ChessMessageSeparator + String.valueOf(SourceColumn));
+                }
                 if (GlobalData.judge(SourceRow, SourceColumn)) {
                     GlobalData.Winner = GlobalData.NexDrop;
                 }

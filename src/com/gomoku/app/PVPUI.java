@@ -5,13 +5,15 @@ import javax.swing.*;
 
 public class PVPUI extends JFrame{
     private StartUI ParentFrame;
+    StatisticalPanel ChessSP;
+    Board ChessBoard;
 
     public PVPUI(StartUI p) {
         ParentFrame = p;
         Container c = getContentPane();
         c.setLayout(new FlowLayout());
-        Board ChessBoard = new Board();
-        StatisticalPanel ChessSP = new StatisticalPanel(ParentFrame, this);
+        ChessBoard = new Board(this, ParentFrame);
+        ChessSP = new StatisticalPanel(ParentFrame, this);
         c.add(ChessBoard);
         c.add(ChessSP);
         pack();

@@ -120,8 +120,8 @@ public class StatisticalPanel extends JComponent{
             if (EX >= BackRect.getX() && EX <= BackRect.getX() + BackRect.getWidth()
                     && EY >= BackRect.getY() && EY <= BackRect.getY() + BackRect.getHeight()) {
                 GrandFrame.setVisible(true);
+                GrandFrame.repaint();
                 ParentFrame.setVisible(false);
-
             }
             if (EX >= RestartRect.getX() && EX <= RestartRect.getX() + RestartRect.getWidth()
                     && EY >= RestartRect.getY() && EY <= RestartRect.getY() + RestartRect.getHeight()) {
