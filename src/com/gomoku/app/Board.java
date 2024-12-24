@@ -68,13 +68,12 @@ public class Board extends JComponent {
                 SourceRow = TestRow;
             if (SourceColumn != TestColumn)
                 SourceColumn = TestColumn;
-            if (GlobalData.Pieces[SourceRow][SourceColumn] == GlobalData.PlayerType.NONE) {
-                GlobalData.Pieces[SourceRow][SourceColumn] = GlobalData.CurrentType;
+            if (GlobalData.dropPiece(SourceRow, SourceColumn, GlobalData.NexDrop)) {
                 repaint();
                 if (GlobalData.judge(SourceRow, SourceColumn)) {
-                    GlobalData.Winer = GlobalData.CurrentType;
+                    GlobalData.Winner = GlobalData.NexDrop;
                 }
-                GlobalData.CurrentType = GlobalData.CurrentType == GlobalData.PlayerType.WHITE ?
+                GlobalData.NexDrop = GlobalData.NexDrop == GlobalData.PlayerType.WHITE ?
                         GlobalData.PlayerType.BLACK : GlobalData.PlayerType.WHITE;
             }
         }

@@ -22,6 +22,7 @@ class StartPanel extends JComponent {
     private int OptionSize = 50;
     private int OptionStyle = Font.PLAIN;
     private Rectangle2D.Double PVPRect;
+    private Rectangle2D.Double NetRect;
 
     public StartPanel(StartUI p) {
         ParentFrame = p;
@@ -45,14 +46,14 @@ class StartPanel extends JComponent {
         g2.drawString(TitleText, TitleX, TitleY);
     }
     public void drawButton(Graphics g) {
-        String PVPText = "P V P";
         Graphics2D g2 = (Graphics2D) g;
         Font TheFont = getFont();
         TheFont = TheFont.deriveFont(OptionStyle, OptionSize);
         g2.setFont(TheFont);
+
+        String PVPText = "P V P";
         double PVPHeight = TheFont.getStringBounds(PVPText, g2.getFontRenderContext()).getHeight();
         double PVPWidth = TheFont.getStringBounds(PVPText, g2.getFontRenderContext()).getWidth();
-        double PVPLeading = TheFont.getLineMetrics(PVPText, g2.getFontRenderContext()).getLeading();
         int PVPX = (int)((getWidth() - PVPWidth) / 2);
         int PVPY = (int)(getHeight() - PVPHeight * 2);
         g2.drawString(PVPText, PVPX, PVPY);
@@ -60,6 +61,17 @@ class StartPanel extends JComponent {
                 PVPWidth * 2, PVPHeight);
         g2.setStroke(new BasicStroke(5));
         g2.draw(PVPRect);
+
+        String NetText = "N E T";
+        double NetHeight = TheFont.getStringBounds(NetText, g2.getFontRenderContext()).getHeight();
+        double NetWidth = TheFont.getStringBounds(NetText, g2.getFontRenderContext()).getWidth();
+        int NetX = (int)((getWidth() - NetWidth) / 2);
+        int NetY = (int)(PVPY - NetHeight * 2);
+        g2.drawString(NetText, NetX, NetY);
+        NetRect = new Rectangle2D.Double(NetX - NetWidth / 2, NetY - NetHeight * 3 / 4,
+                NetWidth * 2, NetHeight);
+        g2.setStroke(new BasicStroke(5));
+        g2.draw(NetRect);
     }
 
     public Dimension getPreferredSize() {
@@ -75,6 +87,12 @@ class StartPanel extends JComponent {
                 PVPUI ThePVPUI = new PVPUI(ParentFrame);
                 ParentFrame.setVisible(false);
                 ThePVPUI.setVisible(true);
+            }
+            if (EX >= NetRect.getX() && EX <= NetRect.getX() + NetRect.getWidth()
+                    && EY >= NetRect.getY() && EY <= NetRect.getY() + NetRect.getHeight()) {
+                ConnectUI TheConnectUI = new ConnectUI(ParentFrame);
+                ParentFrame.setVisible(false);
+                TheConnectUI.setVisible(true);
             }
         }
     }

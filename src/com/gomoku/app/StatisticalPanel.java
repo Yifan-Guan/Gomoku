@@ -54,9 +54,9 @@ public class StatisticalPanel extends JComponent{
 
         g2.setFont(TheFont);
         String WinnerInfo = "Winner is :";
-        if (GlobalData.Winer == GlobalData.PlayerType.WHITE)
+        if (GlobalData.Winner == GlobalData.PlayerType.WHITE)
             WinnerInfo += "whiter player";
-        else if (GlobalData.Winer == GlobalData.PlayerType.BLACK)
+        else if (GlobalData.Winner == GlobalData.PlayerType.BLACK)
             WinnerInfo += "blacker player";
 
         double WinnerInfoHeight = TheFont.getStringBounds(WinnerInfo, g2.getFontRenderContext()).getHeight();
@@ -67,9 +67,9 @@ public class StatisticalPanel extends JComponent{
         g2.drawString(WinnerInfo, WinnerInfoX, WinnerInfoY);
 
         String NextDropInfo = "Next drop is : ";
-        if (GlobalData.CurrentType == GlobalData.PlayerType.WHITE)
+        if (GlobalData.NexDrop == GlobalData.PlayerType.WHITE)
             NextDropInfo += "white";
-        else if (GlobalData.CurrentType == GlobalData.PlayerType.BLACK)
+        else if (GlobalData.NexDrop == GlobalData.PlayerType.BLACK)
             NextDropInfo += "black";
 
         double NextDropInfoHeight = TheFont.getStringBounds(NextDropInfo, g2.getFontRenderContext()).getHeight();

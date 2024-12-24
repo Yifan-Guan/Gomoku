@@ -24,15 +24,32 @@ public class GlobalData {
     static int UIHeight = BoardHeight;
 
     enum PlayerType {NONE, WHITE, BLACK};
-    static PlayerType CurrentType = PlayerType.WHITE;
-    static PlayerType Winer = PlayerType.NONE;
+    static PlayerType Player = PlayerType.WHITE;
+    static PlayerType NexDrop = PlayerType.WHITE;
+    static PlayerType Winner = PlayerType.NONE;
     static PlayerType[][] Pieces = new PlayerType[BoardRows][BoardColumns];
 
+    static int ConnectUIWidth = 600;
+    static int ConnectUIHeight = 300;
+
+    static String ChessMessageHead = "Chess: ";
+    static String ChessMessageSeparator = ",";
+    static String ChatMessageHead = "Chat: ";
+
     static void initPieces() {
-        CurrentType = PlayerType.WHITE;
+        NexDrop = PlayerType.WHITE;
+        Winner = PlayerType.NONE;
         for (int i = 0; i < BoardRows; i++)
             for (int j = 0; j < BoardColumns; j++)
                 Pieces[i][j] = PlayerType.NONE;
+    }
+    static boolean dropPiece(int r, int c, PlayerType t) {
+        if (Pieces[r][c] == PlayerType.NONE && t == NexDrop) {
+            Pieces[r][c] = t;
+            return true;
+        }
+        else
+            return false;
     }
     static boolean judge(int r, int c) {
         if (r < 0 || r >= BoardRows || c < 0 || c >= BoardColumns)
