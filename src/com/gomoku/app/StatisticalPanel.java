@@ -1,12 +1,14 @@
 package com.gomoku.app;
 
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.*;
 import javax.swing.*;
 
 public class StatisticalPanel extends JComponent{
-    private StartUI ParentFrame;
+    private JFrame ParentFrame;
+    private StartUI GrandFrame;
     private int FlashInterval = 500;
 
     private float InfoFontSize = 30;
@@ -18,9 +20,10 @@ public class StatisticalPanel extends JComponent{
     private int InfoAreaHeight = GlobalData.SPHeight - ButtonAreaHeight;
 
     private Rectangle2D BackRect;
-    private Rectangle2D CloseRect;
+    private Rectangle2D RestartRect;
 
-    public StatisticalPanel(StartUI p) {
+    public StatisticalPanel(StartUI g, JFrame p) {
+        GrandFrame = g;
         ParentFrame = p;
         setSize(GlobalData.SPWidth, GlobalData.SPHeight);
         new Timer(FlashInterval, event -> repaint()).start();
@@ -30,6 +33,7 @@ public class StatisticalPanel extends JComponent{
         showText(g);
         drawButtonAreaFrame(g);
         drawButton(g);
+        addMouseListener(new ChossButton());
     }
     public void drawInfoAreaFrame(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
@@ -61,38 +65,69 @@ public class StatisticalPanel extends JComponent{
         int WinnerInfoY = (int)(GlobalData.SPBoundaryWidth + WinnerInfoHeight * 2);
 
         g2.drawString(WinnerInfo, WinnerInfoX, WinnerInfoY);
+
+        String NextDropInfo = "Next drop is : ";
+        if (GlobalData.CurrentType == GlobalData.PlayerType.WHITE)
+            NextDropInfo += "white";
+        else if (GlobalData.CurrentType == GlobalData.PlayerType.BLACK)
+            NextDropInfo += "black";
+
+        double NextDropInfoHeight = TheFont.getStringBounds(NextDropInfo, g2.getFontRenderContext()).getHeight();
+        double NextDropInfoWidth = TheFont.getStringBounds(NextDropInfo, g2.getFontRenderContext()).getWidth();
+        int NextDropInfoX = (int)((getWidth() - NextDropInfoWidth) / 2);
+        int NextDropInfoY = (int)(WinnerInfoY + NextDropInfoHeight * 2);
+
+        g2.drawString(NextDropInfo, NextDropInfoX, NextDropInfoY);
     }
     public Dimension getPreferredSize() {
         return new Dimension(GlobalData.SPWidth, GlobalData.SPHeight);
     }
     public void drawButton(Graphics g) {
         String BackText = "BACK";
-        String CloseText = "CLOSE";
+        String RestartText = "RESTART";
         Graphics2D g2 = (Graphics2D) g;
         Font TheFont = getFont();
         TheFont = TheFont.deriveFont(ButtonFontStyle, ButtonFontSize);
         g2.setFont(TheFont);
         double BackHeight = TheFont.getStringBounds(BackText, g2.getFontRenderContext()).getHeight();
         double BackWidth = TheFont.getStringBounds(BackText, g2.getFontRenderContext()).getWidth();
-        double CloseHeight = TheFont.getStringBounds(CloseText, g2.getFontRenderContext()).getHeight();
-        double CloseWidth = TheFont.getStringBounds(CloseText, g2.getFontRenderContext()).getWidth();
-        double ButtonWidth = CloseWidth * 2;
-        double ButtonHeight = CloseHeight;
+        double RestartHeight = TheFont.getStringBounds(RestartText, g2.getFontRenderContext()).getHeight();
+        double RestartWidth = TheFont.getStringBounds(RestartText, g2.getFontRenderContext()).getWidth();
+        double ButtonWidth = RestartWidth * 1.2;
+        double ButtonHeight = RestartHeight;
         double Distance = (getWidth() - 2 * GlobalData.SPBoundaryWidth - 2 * ButtonWidth) / 3;
         double BackRectX = GlobalData.SPBoundaryWidth + Distance;
-        double CloseRectX = GlobalData.SPBoundaryWidth + 2 * Distance + ButtonWidth;
+        double RestartRectX = GlobalData.SPBoundaryWidth + 2 * Distance + ButtonWidth;
         double BackRectY = getHeight() - ButtonAreaHeight / 2 - ButtonHeight / 2;
-        double CloseRectY = BackRectY;
+        double RestartRectY = BackRectY;
         int BackTextX = (int)(BackRectX + ButtonWidth / 2 - BackWidth / 2);
-        int CloseTextX = (int)(CloseRectX + ButtonWidth / 2 - CloseWidth / 2);
+        int RestartTextX = (int)(RestartRectX + ButtonWidth / 2 - RestartWidth / 2);
         int BackTextY = (int)(BackRectY + ButtonHeight * 3 / 4);
-        int CloseTextY = (int)(CloseRectY + ButtonHeight * 3 / 4);
+        int RestartTextY = (int)(RestartRectY + ButtonHeight * 3 / 4);
         g2.drawString(BackText, BackTextX, BackTextY);
-        g2.drawString(CloseText, CloseTextX, CloseTextY);
+        g2.drawString(RestartText, RestartTextX, RestartTextY);
         BackRect = new Rectangle2D.Double(BackRectX, BackRectY, ButtonWidth, ButtonHeight);
-        CloseRect = new Rectangle2D.Double(CloseRectX, CloseRectY, ButtonWidth, ButtonHeight);
+        RestartRect = new Rectangle2D.Double(RestartRectX, RestartRectY, ButtonWidth, ButtonHeight);
         g2.setStroke(new BasicStroke(5));
         g2.draw(BackRect);
-        g2.draw(CloseRect);
+        g2.draw(RestartRect);
+    }
+
+    private class ChossButton extends MouseAdapter {
+        public void mouseClicked(MouseEvent event) {
+            int EX = event.getX();
+            int EY = event.getY();
+            if (EX >= BackRect.getX() && EX <= BackRect.getX() + BackRect.getWidth()
+                    && EY >= BackRect.getY() && EY <= BackRect.getY() + BackRect.getHeight()) {
+                GrandFrame.setVisible(true);
+                ParentFrame.setVisible(false);
+
+            }
+            if (EX >= RestartRect.getX() && EX <= RestartRect.getX() + RestartRect.getWidth()
+                    && EY >= RestartRect.getY() && EY <= RestartRect.getY() + RestartRect.getHeight()) {
+                GlobalData.initPieces();
+                ParentFrame.repaint();
+            }
+        }
     }
 }

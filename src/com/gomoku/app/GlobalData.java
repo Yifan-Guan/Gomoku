@@ -29,6 +29,7 @@ public class GlobalData {
     static PlayerType[][] Pieces = new PlayerType[BoardRows][BoardColumns];
 
     static void initPieces() {
+        CurrentType = PlayerType.WHITE;
         for (int i = 0; i < BoardRows; i++)
             for (int j = 0; j < BoardColumns; j++)
                 Pieces[i][j] = PlayerType.NONE;

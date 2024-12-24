@@ -11,7 +11,7 @@ public class PVPUI extends JFrame{
         Container c = getContentPane();
         c.setLayout(new FlowLayout());
         Board ChessBoard = new Board();
-        StatisticalPanel ChessSP = new StatisticalPanel(ParentFrame);
+        StatisticalPanel ChessSP = new StatisticalPanel(ParentFrame, this);
         c.add(ChessBoard);
         c.add(ChessSP);
         pack();
