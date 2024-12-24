@@ -1,7 +1,6 @@
 package com.gomoku.app;
 
 import java.awt.*;
-import java.awt.geom.*;
 import javax.swing.*;
 
 public class StatisticalPanel extends JComponent{
