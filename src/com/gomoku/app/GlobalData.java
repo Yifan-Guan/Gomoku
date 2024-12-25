@@ -19,15 +19,14 @@ public class GlobalData {
     static int SPHeight = BoardHeight;
     static int SPBoundaryWidth = 20;
 
-
-    static int UIWidth = BoardWidth + SPWidth;
-    static int UIHeight = BoardHeight;
-
     enum PlayerType {NONE, WHITE, BLACK};
     static PlayerType Player = PlayerType.WHITE;
     static PlayerType NexDrop = PlayerType.WHITE;
     static PlayerType Winner = PlayerType.NONE;
     static PlayerType[][] Pieces = new PlayerType[BoardRows][BoardColumns];
+
+    static int WhiteDrops = 0;
+    static int BlackDrops = 0;
 
     static int ConnectUIWidth = 600;
     static int ConnectUIHeight = 300;
@@ -37,29 +36,29 @@ public class GlobalData {
     static String ChessMessageSeparator = ",";
     static String ChatMessageHead = "Chat: ";
     static String PlayerMessageHead = "Player: ";
+    static String RestartMessageHead = "Restart";
 
     static void initPieces() {
         NexDrop = PlayerType.WHITE;
         Winner = PlayerType.NONE;
+        WhiteDrops = 0;
+        BlackDrops = 0;
         for (int i = 0; i < BoardRows; i++)
             for (int j = 0; j < BoardColumns; j++)
                 Pieces[i][j] = PlayerType.NONE;
     }
+
     static boolean dropPiece(int r, int c, PlayerType t) {
-        if (NetMode) {
-            if (Pieces[r][c] == PlayerType.NONE && t == NexDrop) {
-                Pieces[r][c] = t;
-                return true;
-            } else
-                return false;
-        }
-        else {
-            if (Pieces[r][c] == PlayerType.NONE && t == NexDrop) {
-                Pieces[r][c] = t;
-                return true;
-            } else
-                return false;
-        }
+        if (Pieces[r][c] == PlayerType.NONE && t == NexDrop) {
+            Pieces[r][c] = t;
+            if (t == PlayerType.WHITE) {
+                WhiteDrops++;
+            } else if (t == PlayerType.BLACK) {
+                BlackDrops++;
+            }
+            return true;
+        } else
+            return false;
     }
     static boolean judge(int r, int c) {
         if (r < 0 || r >= BoardRows || c < 0 || c >= BoardColumns)

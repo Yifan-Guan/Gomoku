@@ -11,9 +11,11 @@ public class StatisticalPanel extends JComponent{
     private StartUI GrandFrame;
     private int FlashInterval = 500;
 
-    private float InfoFontSize = 30;
+    private int TitleFontSize = 40;
+    private int TitleFontStyle = Font.BOLD;
+    private int InfoFontSize = 30;
     private int InfoFontStyle = Font.BOLD;
-    private float ButtonFontSize = 30;
+    private int ButtonFontSize = 30;
     private int ButtonFontStyle = Font.PLAIN;
 
     private int ButtonAreaHeight = 150;
@@ -49,10 +51,20 @@ public class StatisticalPanel extends JComponent{
     }
     public void showText(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        Font TheFont = getFont();
-        TheFont = TheFont.deriveFont(InfoFontStyle, InfoFontSize);
-
+        Font TheFont = new Font ("", TitleFontStyle, TitleFontSize);
         g2.setFont(TheFont);
+
+        String Title = "Statistical Information";
+        double TitleHeight = TheFont.getStringBounds(Title, g2.getFontRenderContext()).getHeight();
+        double TitleWidth = TheFont.getStringBounds(Title, g2.getFontRenderContext()).getWidth();
+        int TitleX = (int)((getWidth() - TitleWidth) / 2);
+        int TitleY = (int)(GlobalData.SPBoundaryWidth + TitleHeight * 2);
+
+        g2.drawString(Title, TitleX, TitleY);
+
+        TheFont = new Font ("", InfoFontStyle, InfoFontSize);
+        g2.setFont(TheFont);
+
         String WinnerInfo = "Winner is :";
         if (GlobalData.Winner == GlobalData.PlayerType.WHITE)
             WinnerInfo += "whiter player";
@@ -62,7 +74,7 @@ public class StatisticalPanel extends JComponent{
         double WinnerInfoHeight = TheFont.getStringBounds(WinnerInfo, g2.getFontRenderContext()).getHeight();
         double WinnerInfoWidth = TheFont.getStringBounds(WinnerInfo, g2.getFontRenderContext()).getWidth();
         int WinnerInfoX = (int)((getWidth() - WinnerInfoWidth) / 2);
-        int WinnerInfoY = (int)(GlobalData.SPBoundaryWidth + WinnerInfoHeight * 2);
+        int WinnerInfoY = (int)(TitleY + WinnerInfoHeight * 2);
 
         g2.drawString(WinnerInfo, WinnerInfoX, WinnerInfoY);
 
@@ -78,6 +90,41 @@ public class StatisticalPanel extends JComponent{
         int NextDropInfoY = (int)(WinnerInfoY + NextDropInfoHeight * 2);
 
         g2.drawString(NextDropInfo, NextDropInfoX, NextDropInfoY);
+
+        String WhiteDropsInfo = "White drops : ";
+        WhiteDropsInfo += String.valueOf(GlobalData.WhiteDrops);
+
+        double WhiteDropsInfoHeight = TheFont.getStringBounds(WhiteDropsInfo, g2.getFontRenderContext()).getHeight();
+        double WhiteDropsInfoWidth = TheFont.getStringBounds(WhiteDropsInfo, g2.getFontRenderContext()).getWidth();
+        int WhiteDropsInfoX = (int)((getWidth() - WhiteDropsInfoWidth) / 2);
+        int WhiteDropsInfoY = (int)(NextDropInfoY + WhiteDropsInfoHeight * 2);
+
+        g2.drawString(WhiteDropsInfo, WhiteDropsInfoX, WhiteDropsInfoY);
+
+        String BlackDropsInfo = "Black drops : ";
+        BlackDropsInfo += String.valueOf(GlobalData.BlackDrops);
+
+        double BlackDropsInfoHeight = TheFont.getStringBounds(BlackDropsInfo, g2.getFontRenderContext()).getHeight();
+        double BlackDropsInfoWidth = TheFont.getStringBounds(BlackDropsInfo, g2.getFontRenderContext()).getWidth();
+        int BlackDropsInfoX = (int)((getWidth() - BlackDropsInfoWidth) / 2);
+        int BlackDropsInfoY = (int)(WhiteDropsInfoY + BlackDropsInfoHeight * 2);
+
+        g2.drawString(BlackDropsInfo, BlackDropsInfoX, BlackDropsInfoY);
+
+        if (GlobalData.NetMode) {
+            String CurrentPlayerInfo = "Current player : ";
+            if (GlobalData.Player == GlobalData.PlayerType.WHITE)
+                CurrentPlayerInfo += "white";
+            else if (GlobalData.Player == GlobalData.PlayerType.BLACK)
+                CurrentPlayerInfo += "black";
+
+            double CurrentPlayerInfoHeight = TheFont.getStringBounds(CurrentPlayerInfo, g2.getFontRenderContext()).getHeight();
+            double CurrentPlayerInfoWidth = TheFont.getStringBounds(CurrentPlayerInfo, g2.getFontRenderContext()).getWidth();
+            int CurrentPlayerInfoX = (int)((getWidth() - CurrentPlayerInfoWidth) / 2);
+            int CurrentPlayerInfoY = (int)(BlackDropsInfoY + CurrentPlayerInfoHeight * 2);
+
+            g2.drawString(CurrentPlayerInfo, CurrentPlayerInfoX, CurrentPlayerInfoY);
+        }
     }
     public Dimension getPreferredSize() {
         return new Dimension(GlobalData.SPWidth, GlobalData.SPHeight);
@@ -126,7 +173,9 @@ public class StatisticalPanel extends JComponent{
             if (EX >= RestartRect.getX() && EX <= RestartRect.getX() + RestartRect.getWidth()
                     && EY >= RestartRect.getY() && EY <= RestartRect.getY() + RestartRect.getHeight()) {
                 GlobalData.initPieces();
-                ParentFrame.repaint();
+                if (GlobalData.NetMode) {
+                    GrandFrame.getNet().sendMessage(GlobalData.ChatMessageHead + GlobalData.RestartMessageHead);
+                }
             }
         }
     }
