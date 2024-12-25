@@ -74,7 +74,7 @@ public class GlobalData {
                     BreakOut[0] = true;
             }
             if (r + i < BoardRows && !BreakOut[1]) {
-                if (Pieces[r + 1][c] == Pieces[r][c])
+                if (Pieces[r + i][c] == Pieces[r][c])
                     Count[0]++;
                 else
                     BreakOut[1] = true;
