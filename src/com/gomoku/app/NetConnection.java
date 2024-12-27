@@ -76,6 +76,9 @@ public class NetConnection {
                     GlobalData.Player = GlobalData.PlayerType.BLACK;
                 }
             }
+            else if (Line.startsWith(GlobalData.RestartMessageHead)) {
+                GlobalData.initPieces();
+            }
         }
     }
     public void sendMessage(String m) {
